@@ -9,7 +9,7 @@ import sys
 from logging import getLogger, StreamHandler, INFO
 class TFEventFileParser:
     def find_all_files(self, directory):
-        for root, dirs, files in os.walk(directory):
+        for root, dirs, files in tf.gfile.Walk(directory):
             yield root
             for f in files:
                 yield os.path.join(root, f)
@@ -56,7 +56,7 @@ class MetricsCollector:
     def parse_file(self, directory):
         mls = []
         for f in self.parser.find_all_files(directory):
-            if os.path.isdir(f):
+            if tf.gfile.IsDirectory(f):
                 continue
             try:
                 self.logger.info(f+" will be parsed.")
@@ -66,4 +66,4 @@ class MetricsCollector:
             except:
                 self.logger.warning("Unexpected error:"+ str(sys.exc_info()[0]))
                 continue
-        return mls 
+        return mls
